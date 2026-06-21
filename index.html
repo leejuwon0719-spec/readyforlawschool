@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="LawReady - 로스쿨 합격 가능성 시뮬레이터" />
+  <title>LawReady | 로스쿨 합격 예측</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="LawReady 홈">
+    <span class="brand-mark">LR</span><span>LawReady</span>
+  </a>
+  <nav>
+    <a href="#predict">합격예측</a><a href="#schools">로스쿨 정보</a><a href="#strategy">전략 분석</a>
+  </nav>
+  <button class="ghost" id="resetBtn">초기화</button>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">DATA-DRIVEN LAW SCHOOL ADMISSION</span>
+      <h1>감이 아닌 데이터로<br><em>로스쿨 지원 전략</em>을 세우세요.</h1>
+      <p>GPA, LEET, 영어 성적과 대학 정보를 입력하면 전국 25개 로스쿨의 상대적 합격 가능성과 개선 포인트를 한눈에 보여드립니다.</p>
+      <div class="hero-actions"><a class="primary" href="#predict">무료로 예측하기</a><a class="secondary" href="#schools">학교 비교하기</a></div>
+      <div class="trust"><span>✓ 회원가입 없이 사용</span><span>✓ 브라우저에만 저장</span><span>✓ 실시간 재계산</span></div>
+    </div>
+    <div class="hero-card glass">
+      <div class="mini-head"><span>나의 예상 경쟁력</span><b id="heroScore">상위 24%</b></div>
+      <div class="gauge"><div class="gauge-fill" id="gaugeFill"></div><span id="gaugeText">76</span></div>
+      <div class="mini-grid"><div><small>LEET</small><b id="heroLeet">130</b></div><div><small>GPA</small><b id="heroGpa">3.95</b></div><div><small>TOEIC</small><b id="heroEnglish">950</b></div></div>
+      <p class="disclaimer">데모 모델의 참고용 결과이며 실제 합격을 보장하지 않습니다.</p>
+    </div>
+  </section>
+
+  <section class="section" id="predict">
+    <div class="section-title"><span>01</span><div><h2>내 성적 입력</h2><p>입력값을 바꾸면 결과가 즉시 갱신됩니다.</p></div></div>
+    <div class="predict-layout">
+      <form class="panel input-panel" id="scoreForm">
+        <label>출신 대학<select id="university"><option value="1.00">서울대학교</option><option value="0.97" selected>고려대학교</option><option value="0.97">연세대학교</option><option value="0.92">성균관대학교</option><option value="0.90">한양대학교</option><option value="0.87">서강대학교</option><option value="0.82">중앙·경희·이화여대</option><option value="0.76">기타 수도권 대학</option><option value="0.70">지역 거점 국립대</option><option value="0.64">기타 대학</option></select></label>
+        <div class="field-row">
+          <label>GPA <span id="gpaValue">3.95 / 4.5</span><input id="gpa" type="range" min="2.5" max="4.5" value="3.95" step="0.01"></label>
+          <label>LEET 표준점수 합 <span id="leetValue">130</span><input id="leet" type="range" min="95" max="155" value="130" step="1"></label>
+        </div>
+        <div class="field-row">
+          <label>TOEIC 환산점수 <span id="englishValue">950</span><input id="english" type="range" min="600" max="990" value="950" step="5"></label>
+          <label>서류·면접 경쟁력 <span id="softValue">보통 이상</span><input id="soft" type="range" min="1" max="5" value="3" step="1"></label>
+        </div>
+        <label>수상·활동·자기소개서 메모<textarea id="memo" rows="3" placeholder="예: 학회장, 공공기관 인턴, 정책 공모전 수상"></textarea></label>
+        <div class="save-line"><span id="saveStatus">입력 내용은 자동 저장됩니다.</span><button type="button" class="secondary small" id="saveBtn">현재 결과 저장</button></div>
+      </form>
+
+      <aside class="panel summary-panel">
+        <span class="badge" id="tierBadge">상위권 도전 가능</span>
+        <h3>종합 경쟁력 <strong id="totalScore">76점</strong></h3>
+        <div class="score-bars" id="scoreBars"></div>
+        <div class="callout" id="mainAdvice"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section dark" id="schools">
+    <div class="section-title light"><span>02</span><div><h2>전국 로스쿨 합격 가능성</h2><p>검색하거나 안정·적정·소신 지원군으로 필터링하세요.</p></div></div>
+    <div class="toolbar"><input id="search" type="search" placeholder="학교명 검색"><div class="chips"><button class="chip active" data-filter="all">전체</button><button class="chip" data-filter="safe">안정</button><button class="chip" data-filter="target">적정</button><button class="chip" data-filter="reach">소신</button></div><select id="sort"><option value="prob">합격 가능성순</option><option value="name">학교명순</option><option value="seats">정원순</option></select></div>
+    <div class="school-grid" id="schoolGrid"></div>
+  </section>
+
+  <section class="section" id="strategy">
+    <div class="section-title"><span>03</span><div><h2>맞춤형 입시 전략</h2><p>현재 성적에서 가장 효과적인 개선 경로를 제안합니다.</p></div></div>
+    <div class="strategy-grid">
+      <article class="panel"><span class="icon">↑</span><h3>가장 큰 레버리지</h3><p id="leverageText"></p></article>
+      <article class="panel"><span class="icon">◎</span><h3>추천 지원 조합</h3><p id="portfolioText"></p></article>
+      <article class="panel"><span class="icon">△</span><h3>주의할 점</h3><p>학교별 정성평가, 면접, 학업계획서 반영 방식이 다르므로 본 결과는 1차 지원군 구성에만 활용하세요.</p></article>
+    </div>
+    <div class="panel simulator">
+      <div><span class="eyebrow">WHAT-IF SIMULATOR</span><h3>LEET가 3점 오르면?</h3><p>목표 점수를 움직여 합격 가능성 변화를 확인하세요.</p></div>
+      <label>가정 LEET <b id="simValue">133</b><input id="simLeet" type="range" min="95" max="160" value="133"></label>
+      <div class="sim-result"><small>평균 상승폭</small><strong id="simDelta">+7.8%p</strong></div>
+    </div>
+  </section>
+</main>
+
+<footer><div><b>LawReady</b><p>로스쿨 지원자를 위한 데이터 기반 의사결정 도구</p></div><p>© 2026 LawReady. Educational prototype.</p></footer>
+<div class="toast" id="toast">결과가 저장되었습니다.</div>
+<script src="app.js"></script>
+</body>
+</html>
